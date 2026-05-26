@@ -1,6 +1,6 @@
 # 🎬 Netflix Backend
 
-**By DigitalWitch | Cloud • DevOps • Security**
+**Oshiokefred | Cloud • DevOps • Security**
 
 ---
 
@@ -134,8 +134,4 @@ java -jar target/{your_artifact_name}.jar
 
 ---
 
-## 🎓 Final Words
 
-Good luck with your learning and development journey! 🚀
-
-**— Engr. Smart Cares**
