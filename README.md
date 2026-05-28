@@ -336,7 +336,13 @@ The build failed because the process exited too early. This probably means the s
 ## Repository Links
 
 - Backend: https://github.com/oshiokefred-collab/netflix-styled-backend
-- Frontend: https://github.com/oshiokefred-collab/netflix-styled-frontend
+- Frontend: https://github.com/oshiokefred-collab/netflix-styled-fronten
+
+## Demo Video
+
+A full walkthrough of the application is available below:
+
+https://drive.google.com/file/d/1xka5whd_nbtpxweC_JadQVgW9jBV1Sap/view?usp=drivesdk
 
 ---
 
