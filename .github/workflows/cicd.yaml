@@ -1,41 +1,62 @@
-name: Build and push docker image.
+# Name of the pipeline as it appears in the GitHub Actions tab
+name: Build and Push Backend to ECR
 
+# ─────────────────────────────────────────────
+# TRIGGER: when should this pipeline run?
+# ─────────────────────────────────────────────
 on:
   push:
-    branches: [ main ]
+    branches:
+      - master   # runs every time you push to the master branch
 
+# ─────────────────────────────────────────────
+# JOBS: the actual work the pipeline does
+# ─────────────────────────────────────────────
 jobs:
   build-and-push:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest   # GitHub provides a free Ubuntu machine to run this
 
     steps:
-    - name: Check out the repository
-      uses: actions/checkout@v2
+      # Step 1 — Get your code onto the runner
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
+      # Step 2 — Set up AWS credentials from your GitHub Secrets
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-# Login to ECR
-#=============
-    - name: Login to ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v2
+      # Step 3 — Log in to Amazon ECR
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
 
+      # Step 4 — Create application.properties from the secret
+      # This file is NEVER committed to GitHub. The pipeline builds it
+      # on the fly using the MONGO_URI secret you stored.
+      - name: Create application.properties
+        run: |
+          echo "spring.data.mongodb.uri=${{ secrets.MONGO_URI }}" > application.properties
+          echo "spring.data.mongodb.database=movieist" >> application.properties
+          echo "server.port=8080" >> application.properties
 
-    - name: Docker build 
-      run: |
-        echo "${{ vars.APPLICATION_PROPERTIES }}" > application.properties
-        # ls -la 
-        # cat application.properties
-        docker build -t netflix_backend:latest .
+      # Step 5 (optional debug) — confirm the file was created
+      # Useful while testing. You can remove this later.
+      - name: Verify application.properties exists
+        run: ls -la application.properties
 
-    - name: Docker push
-      run: |
-        docker tag netflix_backend:latest 348230509416.dkr.ecr.us-east-2.amazonaws.com/netflix_backend:${GITHUB_RUN_NUMBER}
-        docker push 348230509416.dkr.ecr.us-east-2.amazonaws.com/netflix_backend:${GITHUB_RUN_NUMBER}
-
+      # Step 6 — Build the Docker image and tag it
+      # We tag with the unique GitHub run number for traceability,
+      # and also tag 'latest' for convenience.
+      - name: Build, tag, and push image to ECR
+        env:
+          REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+          REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ github.run_number }}
+        run: |
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest .
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          docker push $REGISTRY/$REPOSITORY:latest
