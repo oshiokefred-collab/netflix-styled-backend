@@ -17,32 +17,10 @@ A managed Kubernetes service removes the burden of operating the control plane. 
 ---
 
 ## Architecture
+<img width="651" height="668" alt="EKS Cluster architecture drawio" src="https://github.com/user-attachments/assets/61aae52c-75c7-4a28-a9f4-fa061129eb31" />
 
 ```
-                MongoDB Atlas (cloud cluster)
-                          ▲
-                          │ mongodb+srv (Kubernetes secret)
-                          │
-        ┌─────────────────────────────────────────────┐
-        │              AWS EKS Cluster                  │
-        │   Control plane: managed by AWS               │
-        │                                               │
-        │   ┌─────────────────┐   ┌─────────────────┐   │
-        │   │ Worker node 1   │   │ Worker node 2   │   │
-        │   │ (t3.small)      │   │ (t3.small)      │   │
-        │   └─────────────────┘   └─────────────────┘   │
-        │                                               │
-        │   backend Deployment  + LoadBalancer Service  │
-        │   frontend Deployment + LoadBalancer Service  │
-        └─────────────────────────────────────────────┘
-              │                              │
-              ▼                              ▼
-     AWS ELB (backend)              AWS ELB (frontend)
-     port 8080                      port 80
-              ▲                              ▲
-              │                              │
-        Browser reaches frontend, frontend calls backend
-        via the backend's load balancer DNS name
+         
 ```
 
 ---
