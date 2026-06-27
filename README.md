@@ -10,7 +10,7 @@ A full stack movie review application, deployed two ways to demonstrate the prog
 - **[Managed Kubernetes (AWS EKS)](README-eks.md)** — Deployed on Amazon EKS with eksctl, autoscaling worker nodes, and AWS LoadBalancer services.
 ## Tech Stack
 
-React · Java Spring Boot · MongoDB Atlas · Docker · Kubernetes · K3s · AWS EKS · AWS EC2 · AWS ECR · GitHub Actions 
+React · Java Spring Boot · MongoDB Atlas · Docker · Kubernetes · K3s · AWS EKS · AWS EC2 · AWS ECR · GitHub Actions · Terraform
 
 ## Repositories
 
