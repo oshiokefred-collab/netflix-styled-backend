@@ -17,33 +17,8 @@ Following a fundamentals-first learning approach, this deployment uses K3s, a li
 ---
 
 ## Architecture
+<img width="751" height="648" alt="K3s drawio" src="https://github.com/user-attachments/assets/d8b6acf5-9829-43c1-9938-22117c9b089b" />
 
-```
-                MongoDB Atlas (cloud cluster)
-                          ▲
-                          │ mongodb+srv connection (Kubernetes secret)
-                          │
-        ┌─────────────────────────────────────────┐
-        │   Single EC2 Instance (K3s cluster)      │
-        │                                          │
-        │   ┌────────────────────────────────┐     │
-        │   │  netflix-backend Deployment     │     │
-        │   │  (pod, port 8080)               │     │
-        │   │  Service: NodePort 30080        │     │
-        │   └────────────────────────────────┘     │
-        │                                          │
-        │   ┌────────────────────────────────┐     │
-        │   │  netflix-frontend Deployment    │     │
-        │   │  (pod, port 3000)               │     │
-        │   │  Service: NodePort 30000        │     │
-        │   └────────────────────────────────┘     │
-        │                                          │
-        │   Images pulled from ECR via ecr-secret  │
-        └─────────────────────────────────────────┘
-                          ▲
-                          │ docker pull (imagePullSecrets)
-                          │
-                   AWS ECR (image registry)
 ```
 
 ---
